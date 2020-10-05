@@ -1,0 +1,181 @@
+PROCESSOR 16F887
+    #include <xc.inc>
+    ;AGUSTIN MADRIGAL LUIS #17080167
+    ;MECATRONICA 7A
+;CONFIG1 2007
+		CONFIG FOSC = INTRC_NOCLKOUT
+		CONFIG WDTE = OFF
+		CONFIG PWRTE = ON
+		CONFIG MCLRE = OFF
+		CONFIG CP = OFF
+		CONFIG CPD = OFF
+		CONFIG BOREN = OFF
+		CONFIG IESO = OFF
+		CONFIG FCMEN = ON
+		CONFIG DEBUG = ON
+;CONFIG2 2008
+		CONFIG BOR4V=BOR40V
+		CONFIG WRT = OFF
+		PSECT udata
+	POR1:
+	     DS 1
+	POR2:
+	     DS 1
+	POR3:
+             DS 1
+		PSECT resetVec,class=CODE,delta=2
+	resetVec:
+		PAGESEL main
+		goto main
+    
+		PSECT code
+ ;Apartir de esta linea de codigos empezamos con la especificacion directa para mostrar los numeros en el PORTB
+	DIGITACION0: 
+		    BANKSEL PORTB
+		    movlw 0b00111111 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 0
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION1:
+		    BANKSEL PORTB
+		    movlw 0b00000110 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 1
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION2:
+		    BANKSEL PORTB
+		    movlw 0b01011011 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 2
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION3:
+		    BANKSEL PORTB
+		    movlw 0b01001111 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 3
+		    movwf PORTB
+		    PAGESEL main
+		    return    
+
+		    PSECT code
+	DIGITACION4:
+		    BANKSEL PORTB
+		    movlw 0b01100110 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 4
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION5:
+		    BANKSEL PORTB
+		    movlw 0b01101101 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 5
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION6:
+		    BANKSEL PORTB
+		    movlw 0b01111101 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 6
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION7:
+		    BANKSEL PORTB
+		    movlw 0b00000111 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 7
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION8:
+		    BANKSEL PORTB
+		    movlw 0b01111111 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 8
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+	DIGITACION9:
+		    BANKSEL PORTB
+		    movlw 0b01101111 ;ESTE ES EL CODIGO BINARIO CORRESPONDIENTE PARA EL NUMERO 9
+		    movwf PORTB
+		    PAGESEL main
+		    return
+
+		    PSECT code
+ ;ESTA SECCION ES NECESARIA YA QUE DE NO SER POSIBLE AL MOMENTO DE LLEVARLO A LA PRACTICA FISICA SERA
+ ;IMPOSIBLE CAPTAR LOS CAMBIOS A DIFERENCIA DEL SOFTWARE QUE CON AYUDA DE LOS BREAKPOINT NOS APOYAMOS PARA DAR "PAUSA"
+	delay255:
+		    movlw   0xff
+		    movwf   POR3
+		    decfsz POR3
+		    goto $-1
+		    return
+
+		    PSECT code
+	delay65:
+		    movlw   0xff
+		    movwf   POR2
+		    call delay255
+		    decfsz POR2
+		    goto $-2
+		    return
+
+		    PSECT code
+	delay500:
+		    movlw   0x08
+		    movwf POR1
+		    call delay65
+		    decfsz  POR1
+		    goto $-2
+		    return
+
+		    PSECT code
+	main:
+		    bcf STATUS,0
+		    bcf STATUS,5
+		    bcf STATUS,6
+		    BANKSEL ANSELH
+		    CLRF ANSELH
+		    BANKSEL TRISB
+		    MOVLW 0b00000000
+		    MOVWF TRISB
+		    BANKSEL PORTB
+		    CLRF PORTB
+		    BANKSEL OSCCON
+		    MOVLW  0b01110000
+		    MOVWF  OSCCON
+;Para esta sección me base en el comentario que le realice en la clase sobre la duda del "call"
+;Sobre si podiamos usarlo para crear retardos y fue de mucha ayuda
+	INICIO:
+			call DIGITACION0
+			call delay500
+			call DIGITACION1
+			call delay500
+			call DIGITACION2
+			call delay500   
+			call DIGITACION3
+			call delay500
+			call DIGITACION4
+			call delay500
+			call DIGITACION5
+			call delay500
+			call DIGITACION6
+			call delay500
+			call DIGITACION7
+			call delay500
+			call DIGITACION8
+			call delay500
+			call DIGITACION9
+			call delay500
+		    GOTO INICIO
+END
+
+
